@@ -1,5 +1,7 @@
 # Microsoft365 Management PowerShell Profiles
-A couple profile options for PowerShell for managing Microsoft 365 services
+A couple profile options for PowerShell for managing Microsoft 365 services.
+
+These will use Multi-Factor Authentication (MFA) prompts to sign in rather than use a stored credential (basic auth method)
 
 ---
 ## Profile Options
