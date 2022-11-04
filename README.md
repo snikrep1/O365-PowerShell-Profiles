@@ -59,4 +59,4 @@ These will use Multi-Factor Authentication (MFA) prompts to sign in rather than 
     Set-ExecutionPolicy RemoteSigned
     ```
 
-*Note: as always, use these scripts at your own risk. Never just download and use a script someone put on the internet without verifying it first*
+*Disclaimer:  These scripts are provided AS IS without any support. Please test in a lab environment prior to production use. *
