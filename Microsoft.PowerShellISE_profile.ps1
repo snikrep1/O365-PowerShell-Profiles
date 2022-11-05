@@ -106,6 +106,8 @@ function Connect-Menu {
     Write-Host "-----------------------------------------------"
     Write-Host "a: Connect to all modules"
     Write-Host "-----------------------------------------------"
+    Write-Host "e: Connect to Common User Management"
+    Write-Host "-----------------------------------------------"
     Write-Host "1: Connect to Office 365 Admin Center"
     Write-Host "2: Connect to Azure Active Directory"
     Write-Host "3: Connect to Exchange Online"
@@ -131,6 +133,12 @@ function Connect-Menu {
                 Connect-SecurityandCompliance;
                 Connect-SharePoint;
                 Connect-Teams;
+            }
+            'e' {
+                cls
+                Connect-Admin365
+                Connect-AzureADPS
+                Connect-Exchange
             }
             '1'{
                 cls
