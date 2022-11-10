@@ -1,3 +1,22 @@
+######################################################################################################
+#                                                                                                    #
+# Name:        Microsoft 365 PowerShell Administration Tool                                          #
+#                                                                                                    #
+# Version:     1.0                                                                                   #
+#                                                                                                    #
+# Description: A PowerShell profile alternative for your default console profile.                    #
+#              Use this to manage Microsoft 365 services for your tenant.                            #
+#                                                                                                    #
+# Author:      Guy Perkins                                                                           #
+#                                                                                                    #
+# Usage:       Run Test-Path -Path $PROFILE to check if True and $PROFILE to see that path           #
+#                                                                                                    #
+# Disclaimer:  This script is provided AS IS without any support. Please test in a lab environment   #
+#              prior to production use.                                                              #
+#                                                                                                    #
+######################################################################################################
+
+
 Set-PSReadlineKeyHandler -Key Tab -Function Complete
 Set-PSReadLineOption -ShowToolTips
 $Shell.WindowTitle = "Microsoft 365 Administration"
@@ -11,9 +30,9 @@ function Install-O365Modules {
     Install-Module SharePointPnPPowerShellOnline -Scope CurrentUser -Force
     Install-Module ExchangeOnlineManagement -Scope CurrentUser -Force
 }
-function Close-Connect365 {
-    If ($writeVerbose -eq $true){Write-Host 'Disconnecting from all active sessions' -ForegroundColor Yellow}
-    Get-PSSession | Disconnect-PSSession | Remove-PSSession
+function Close-M365 {
+    If ($writeVerbose -eq $true){Write-Host 'Disconnecting all active sessions' -ForegroundColor Yellow}
+    Get-PSSession | Disconnect-PSSession | Remove-PSSession; Disconnect-SPOService; Disconnect-MicrosoftTeams; Disconnect-ExchangeOnline
     exit
 }
 function Connect-Admin365 {
@@ -72,16 +91,16 @@ function Connect-SharePoint {
     Connect-SPOService -Url https://$tenant-admin.sharepoint.com
 }
 function Connect-PnPSharePoint {
-    $tenant = Read-Host -Prompt "Enter the SharePoint Tenant name (the Contoso part of contoso.onmicrosoft.com): "
+    $tenant = Read-Host -Prompt "Enter the SharePoint Tenant name (the CONTOSO part of contoso.onmicrosoft.com): "
 	$site = Read-Host -Prompt "Enter the SharePoint Site name: "
     Write-Host 'Connecting to PnPSharePoint Online...'  -ForegroundColor Green
     try {
-        Import-Module SharePointPnPPowerShellOnline 
+        Import-Module Pnp.PowerShell
     }
     catch { 
-        Install-Module SharePointPnPPowerShellOnline -scope currentuser -force 
+        Install-Module PnP.PowerShell -scope currentuser -force 
     }
-    Update-Module SharePointPnPPowerShellOnline -force
+    Update-Module PnP.PowerShell -force
     Connect-PnPOnline -Url https://$tenant.sharepoint.com/sites/$site -UseWebLogin
 }
 function Connect-Teams {
@@ -106,20 +125,18 @@ function Connect-Menu {
     Write-Host "-----------------------------------------------"
     Write-Host "a: Connect to all modules"
     Write-Host "-----------------------------------------------"
-    Write-Host "e: Connect to Common User Management"
-    Write-Host "-----------------------------------------------"
     Write-Host "1: Connect to Office 365 Admin Center"
     Write-Host "2: Connect to Azure Active Directory"
     Write-Host "3: Connect to Exchange Online"
     Write-Host "4: Connect to Security and Compliance Center"
     Write-Host "5: Connect to SharePoint Online"
-    Write-Host "6: Connect to SharePoint PnP"
+    Write-Host "6: Connect to SharePoint PnP (Needs to specify site)"
     Write-Host "7: Connect to Teams"
     Write-Host
     Write-Host "================================================================================="
     Write-Host
 
-    $input = Read-Host "Make a selection (press q to skip directly to PowerShell) "
+    $input = Read-Host "Make a selection (press q to skip directly to PowerShell)"
         switch ($input)
         {
             'i' {
@@ -133,12 +150,6 @@ function Connect-Menu {
                 Connect-SecurityandCompliance;
                 Connect-SharePoint;
                 Connect-Teams;
-            }
-            'e' {
-                cls
-                Connect-Admin365
-                Connect-AzureADPS
-                Connect-Exchange
             }
             '1'{
                 cls
@@ -176,7 +187,7 @@ function Connect-Menu {
             }
         }
         Write-Host 'You can clear the screen using the command cls' -ForegroundColor Green
-        Write-Host 'To clear all sessions before closing PowerShell, use: Close-Connect365' -ForegroundColor Yellow
+        Write-Host 'To clear all sessions before closing PowerShell, use: Close-M365' -ForegroundColor Yellow
         Write-Host 'You can reconnect to the menu using the command: Connect-Menu' -ForegroundColor Green
 }
 Set-ExecutionPolicy Bypass -Scope CurrentUser -Force
